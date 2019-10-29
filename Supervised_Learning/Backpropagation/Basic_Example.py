@@ -1,3 +1,10 @@
+"""
+Created on Oct 27, 2019
+
+Attempting to code an AI using the backpropagation algorithm
+
+@author: Christian Zwinkels-Valero
+"""
 import numpy as np
 
 
