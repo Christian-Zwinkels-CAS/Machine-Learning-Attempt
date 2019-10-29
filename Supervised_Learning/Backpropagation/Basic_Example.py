@@ -29,19 +29,26 @@ weights = [np.random.standard_normal(s) for s in weight_sizes]
 # Biases start out as zeros
 biases = [np.zeros((s, 1)) for s in layer_sizes[1:]]
 
-# Chooses a random interger
-ri = numpy.random.randint(len(data_in))
 
-# Sets the activation layer to a random sample from the input data
-a = data_in[ri].reshape((layer_sizes[0], 1))
+def train(inp, out):
+  # Chooses a random interger
+  ri = np.random.randint(len(inp))
 
-# Feedforward
-layers = []  # A list to hold the values of the layers
-z = a
-for w, b in zip(weights, biases):
-    z = np.dot(w, z) + b
-    layers.append(z)
-layers.insert(0, a)  # Inserts the activation layer
-layers_sigmoid = [sigmoid(sig) for sig in layers]  # Applies sigmoid to them
+  # Sets the activation layer to a random sample from the input data
+  a = inp[ri].reshape((layer_sizes[0], 1))
 
-print(layers_sigmoid[-1])
+  # Feedforward
+  layers = []  # A list to hold the values of the layers
+  z = a
+  for w, b in zip(weights, biases):
+      z = np.dot(w, z) + b
+      layers.append(z)
+  layers.insert(0, a)  # Inserts the activation layer
+  layers_sigmoid = [sigmoid(sig) for sig in layers]  # Applies sigmoid to them
+
+  # Calculating the cost for each output perceptron
+  cost_matrix = (layers_sigmoid[-1] - out[ri])**2  # Squared error function
+
+  return layers_sigmoid[-1]
+
+print(train(data_in, data_out))
