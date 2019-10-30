@@ -25,6 +25,11 @@ def sigmoid(x):
     return 1/(1 + np.exp(-x))
 
 
+  # Derivative of the activation function
+def deriv_sigmoid(x):
+    return sigmoid(x) * (1 - sigmoid(x))
+  
+  
 layer_sizes = (2, 3, 1)
 
 # Creates tuple that represent the weight matirices sizes
