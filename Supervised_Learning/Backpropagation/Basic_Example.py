@@ -38,24 +38,29 @@ biases = [np.zeros((s, 1)) for s in layer_sizes[1:]]
 
 
 def train(inp, out):
-  # Chooses a random interger
-  ri = np.random.randint(len(inp))
+    # Chooses a random interger
+    ri = np.random.randint(len(inp))
 
-  # Sets the activation layer to a random sample from the input data
-  a = inp[ri].reshape((layer_sizes[0], 1))
+    # Sets the activation layer to a random sample from the input data
+    a = inp[ri].reshape((layer_sizes[0], 1))
 
-  # Feedforward
-  layers = []  # A list to hold the values of the layers
-  z = a
-  for w, b in zip(weights, biases):
-      z = np.dot(w, z) + b
-      layers.append(z)
-  layers.insert(0, a)  # Inserts the activation layer
-  layers_sigmoid = [sigmoid(sig) for sig in layers]  # Applies sigmoid to them
+    # Feedforward
+    layers = []  # A list to hold the values of the layers
+    z = a
+    for w, b in zip(weights, biases):
+        z = np.dot(w, z) + b
+        layers.append(z)
+    layers.insert(0, a)  # Inserts the activation layer
+    layers_sigmoid = [sigmoid(sig) for sig in layers]  # Applies sigmoid
 
-  # Calculating the cost for each output perceptron
-  cost_matrix = (layers_sigmoid[-1] - out[ri])**2  # Squared error function
+    # Calculating the cost for each output perceptron
+    cost_matrix = (layers_sigmoid[-1] - out[ri])**2  # Squared error function
 
-  return layers_sigmoid[-1]
+    # Calculating delta_L (the last perceptron layer error)
+    delC_dela = 2 * cost_matrix  # Derivative of the squared error function
+    dela_delz = deriv_sigmoid(layers[-1])
+    delta_L = delC_dela * dela_delz
+
+    return delta_L
 
 print(train(data_in, data_out))
