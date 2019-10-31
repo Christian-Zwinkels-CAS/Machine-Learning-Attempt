@@ -66,6 +66,18 @@ def train(inp, out):
     dela_delz = deriv_sigmoid(layers[-1])
     delta_L = delC_dela * dela_delz
 
+    # Calculating the delta for all layers
+    delta_l = []
+    delta_l.append(delta_L)  # We need the last layer deltas for calculations
+
+    for l in range(1, len(layer_sizes) - 1):
+            d = -l - 1  # This is to make sure that l is never 0
+            if d == 0:  # Otherwise the calculations get messed up
+                break
+
+            g = np.dot(weights[-l].T, delta_l[0]) * deriv_sigmoid(layers[-l-1])
+            delta_l.insert(0, g)  # Adds the calculated deltas into the list
+
     return delta_L
 
 print(train(data_in, data_out))
