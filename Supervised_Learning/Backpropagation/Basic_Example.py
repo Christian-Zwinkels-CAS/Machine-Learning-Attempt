@@ -60,7 +60,7 @@ def train(inp, out, iterations, alpha):
         layers_sigmoid.insert(0, a)
 
         # Calculating the cost for each output perceptron
-        cost_matrix = layers_sigmoid[-1] - out[ri]  # Squared error
+        cost_matrix = layers_sigmoid[-1] - out[ri]  # Error
 
         # Calculating delta_L (the last perceptron layer error)
         delC_dela = 2 * cost_matrix  # Derivative of the squared error function
