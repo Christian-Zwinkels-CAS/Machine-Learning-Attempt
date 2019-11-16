@@ -2,7 +2,7 @@
 """
 Created on Sun Nov 10 19:33:17 2019
 
-@author: Christian Zwinkels-Valero
+@author: Poopsickle123
 """
 import numpy as np
 import csv
@@ -35,16 +35,30 @@ def hypothesis(data):
 
 
 # Error
-def cost(prediction, y):
+def costs(prediction, y):
     err = []
+    dJ_dT0 = []
+    dJ_dT1 = []
     for p, y in zip(prediction, y):
         cost = (p - y)**2
         err.append(cost)
-    return sum(err) / len(err)
+        d = p - y
+        dJ_dT0.append(d)
+        dJ_dT1.append(d*p)
+    dJ_dT0 = sum(dJ_dT0) / len(dJ_dT0)
+    dJ_dT1 = sum(dJ_dT1) / len(dJ_dT1)
+    cost = sum(err) / len(err)
+    return cost, dJ_dT0, dJ_dT1
+
+
+# Training
+def train(iterations, alpha):
+    for i in iterations:
+        prediction = hypothesis(X)
+        cost, dJ_dT0, dJ_dT1 = costs(prediction, y)
 
 
 # Test run of the prediction and plotting the results (currently random)
-prediction = hypothesis(X)
-print(cost(prediction, y))
+print(costs(hypothesis(X), y))
 
-plt.scatter(prediction, y)
+plt.scatter(hypothesis(X), y)
