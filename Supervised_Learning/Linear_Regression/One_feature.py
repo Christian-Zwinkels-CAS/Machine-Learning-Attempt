@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Nov 10 19:33:17 2019
+Created on Mon Nov 18 13:50:13 2019
 
 @author: Poopsickle123
 """
@@ -27,38 +27,28 @@ theta = np.random.standard_normal((1, 2))
 
 
 def hypothesis(data):
-    hyp = []
-    for x in data:
-        pred = theta[0][0] + (x * theta[0][1])
-        hyp.append(pred)
-    return hyp
+    pred = (data * theta[0][1]) + theta[0][0]
+    return pred
 
 
-# Error
-def costs(prediction, y):
-    err = []
-    dJ_dT0 = []
-    dJ_dT1 = []
-    for p, y in zip(prediction, y):
-        cost = (p - y)**2
-        err.append(cost)
-        d = p - y
-        dJ_dT0.append(d)
-        dJ_dT1.append(d*p)
-    dJ_dT0 = sum(dJ_dT0) / len(dJ_dT0)
-    dJ_dT1 = sum(dJ_dT1) / len(dJ_dT1)
-    cost = sum(err) / len(err)
-    return cost, dJ_dT0, dJ_dT1
+# Line plot function
+def plotLine(parameters, x, y):
+    x_plot = np.linspace(min(x), max(x))
+    y_plot = parameters[0][0] + (parameters[0][1] * x_plot)
+    plt.plot(x_plot, y_plot)
+    return x_plot
 
 
-# Training
-def train(iterations, alpha):
-    for i in iterations:
-        prediction = hypothesis(X)
-        cost, dJ_dT0, dJ_dT1 = costs(prediction, y)
+# Calculating the costs
+def costs(X, y):
+    cost = 0
+    for p, y in zip(X, y):
+        cost += (hypothesis(p) - y)**2
+    cost /= len(X)
+    return cost
 
 
-# Test run of the prediction and plotting the results (currently random)
-print(costs(hypothesis(X), y))
+# Printing the costs and plotting the line
+print(costs(X, y))
 
-plt.scatter(hypothesis(X), y)
+plotLine(theta, X, y)
