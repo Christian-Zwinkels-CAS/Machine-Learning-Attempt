@@ -12,10 +12,10 @@ import numpy as np
 def openCsv(file):
     a = open(file)
     b = [row for row in csv.reader(a)]
+    for i in range(len(b)):
+        b[i].insert(0, 1)
     c = [[b[i][-1]] for i in range(len(b))]
     for i in range(len(b)):
-        if i > len(b):
-            break
         del b[i][-1]
     X = np.array(b, dtype=np.float64)
     y = np.array(c, dtype=np.float64)
