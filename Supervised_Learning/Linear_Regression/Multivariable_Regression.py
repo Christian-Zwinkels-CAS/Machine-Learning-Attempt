@@ -8,6 +8,7 @@ import csv
 import numpy as np
 
 
+# Function to open the file and turn it into a usable format
 def openCsv(file):
     a = open(file)
     b = [row for row in csv.reader(a)]
@@ -16,9 +17,9 @@ def openCsv(file):
         if i > len(b):
             break
         del b[i][-1]
-    X = np.array(b)
-    y = np.array(c)
+    X = np.array(b, dtype=np.float64)
+    y = np.array(c, dtype=np.float64)
     return X, y
 
 
-print(openCsv("Data_2.csv"))
+X, y = openCsv("Data_2.csv")
