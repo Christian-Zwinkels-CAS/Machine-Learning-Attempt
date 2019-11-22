@@ -28,6 +28,8 @@ for i in range(1, np.size(X, axis=1)):
     if i == 1:
         y_max = np.max(y)
         y /= y_max
+    else:
+        pass
 
     X_max.append(np.max(X[:, i]))
     X[:, i] /= X_max[i - 1]
@@ -36,6 +38,6 @@ thetas = np.abs(np.random.standard_normal((X.shape[-1], 1)))
 
 
 def hypothethis(data_in):
-    data_in / X_max
-    pred = (np.dot(thetas.T, data_in)) * y_max
+    data_in[1:] / np.max(data_in[1:])
+    pred = (np.dot(thetas.T, data_in.reshape((len(data_in), 1)))) * np.max(y)
     return pred
