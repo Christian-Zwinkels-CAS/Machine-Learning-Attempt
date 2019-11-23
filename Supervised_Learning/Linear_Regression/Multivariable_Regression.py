@@ -2,7 +2,7 @@
 """
 Created on Thu Nov 21 15:01:03 2019
 
-@author: Poopsickle123
+@author: Christian Zwinkels-Valero
 """
 import csv
 import numpy as np
@@ -41,3 +41,22 @@ def hypothethis(data_in):
     data_in[1:] / np.max(data_in[1:])
     pred = (np.dot(thetas.T, data_in.reshape((len(data_in), 1)))) * np.max(y)
     return pred
+
+
+def costs(data_in, outputs):
+    pred = []
+    cost = []
+    derivs = []
+    for x, y in zip(data_in, outputs):
+        pred.append(hypothethis(x))
+        c = (pred[-1] - y)**2
+        cost.append(c)
+        d = (pred[-1] - y) * x
+        derivs.append(d)
+    cost = np.average(cost)
+    derivs = np.average(derivs, axis=0)
+    return derivs
+
+
+derivs = costs(X, y)
+print(derivs)
