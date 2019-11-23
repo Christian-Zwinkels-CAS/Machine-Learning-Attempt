@@ -2,7 +2,7 @@
 """
 Created on Mon Nov 18 13:50:13 2019
 
-@author: Poopsickle123
+@author: Christian Zwinkels-Valero
 """
 import numpy as np
 import csv
