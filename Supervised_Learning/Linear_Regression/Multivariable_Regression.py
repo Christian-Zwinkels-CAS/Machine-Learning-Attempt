@@ -34,6 +34,7 @@ for i in range(1, np.size(X, axis=1)):
     X_max.append(np.max(X[:, i]))
     X[:, i] /= X_max[i - 1]
 
+# Prediction
 thetas = np.abs(np.random.standard_normal((X.shape[-1], 1)))
 
 
@@ -43,6 +44,7 @@ def hypothethis(data_in):
     return pred
 
 
+# Calculating the costs
 def costs(data_in, outputs):
     pred = []
     cost = []
@@ -58,6 +60,7 @@ def costs(data_in, outputs):
     return cost, derivs.T
 
 
+# Training function
 def train(data_in, parameters, outputs, iterations=1, alpha=0.1):
     for i in range(iterations):
         cost, derivs = costs(data_in, outputs)
@@ -66,4 +69,5 @@ def train(data_in, parameters, outputs, iterations=1, alpha=0.1):
     return parameters
 
 
+# Sets the parameters to the trained ones
 thetas = train(X, thetas, y, 1000, 0.1)
