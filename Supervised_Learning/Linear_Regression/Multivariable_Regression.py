@@ -49,14 +49,21 @@ def costs(data_in, outputs):
     derivs = []
     for x, y in zip(data_in, outputs):
         pred.append(hypothethis(x))
-        c = (pred[-1] - y)**2
+        c = ((pred[-1] - y)**2)/2
         cost.append(c)
         d = (pred[-1] - y) * x
         derivs.append(d)
     cost = np.average(cost)
     derivs = np.average(derivs, axis=0)
-    return derivs
+    return cost, derivs.T
 
 
-derivs = costs(X, y)
-print(derivs)
+def train(data_in, parameters, outputs, iterations=1, alpha=0.1):
+    for i in range(iterations):
+        cost, derivs = costs(data_in, outputs)
+        parameters -= alpha * derivs
+    print("Error after training: {}".format(cost))
+    return parameters
+
+
+thetas = train(X, thetas, y, 1000, 0.1)
