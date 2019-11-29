@@ -76,6 +76,3 @@ thetas = train(X, thetas, y, 1000, 0.2)
 X[:, 1:] *= X_max
 y *= y_max
 print(hypothethis(X[1]))
-
-r = X[1][1:] / np.max(X[:, 1:], axis=0)
-np.insert(r, 0, 1)
