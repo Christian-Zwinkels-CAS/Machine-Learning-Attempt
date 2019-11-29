@@ -39,9 +39,10 @@ thetas = np.abs(np.random.standard_normal((X.shape[-1], 1)))
 
 
 def hypothethis(data_in):
-    data_in[1:] / np.max(data_in[1:])
-    pred = (np.dot(thetas.T, data_in.reshape((len(data_in), 1)))) * np.max(y)
-    return pred
+    p = data_in[1:] / np.max(X[:, 1:], axis=0)
+    p = np.insert(p, 0, 1)
+    pred = np.dot(thetas.T, p.reshape((len(data_in), 1)))
+    return pred * np.max(y)
 
 
 # Calculating the costs
@@ -70,4 +71,11 @@ def train(data_in, parameters, outputs, iterations=1, alpha=0.1):
 
 
 # Sets the parameters to the trained ones
-thetas = train(X, thetas, y, 1000, 0.1)
+thetas = train(X, thetas, y, 1000, 0.2)
+
+X[:, 1:] *= X_max
+y *= y_max
+print(hypothethis(X[1]))
+
+r = X[1][1:] / np.max(X[:, 1:], axis=0)
+np.insert(r, 0, 1)
