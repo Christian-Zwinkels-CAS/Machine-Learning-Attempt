@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Nov 18 13:50:13 2019
+Created on Mon Dec  2 18:17:32 2019
 
 @author: Christian Zwinkels-Valero
 """
@@ -16,57 +16,35 @@ for i in range(len(b)):
     del b[i][-1]
 
 X = np.array(b, dtype=np.float32)
-X /= np.max(X)
+X_max = np.max(X)
+X /= X_max
 y = np.array(c, dtype=np.float32)
-y /= np.max(y)
+y_max = np.max(y)
+y /= y_max
 
-# Plotting the data
-plt.scatter(X, y)
-plt.show
-
-# Hypothesis function
-theta = np.abs(np.random.standard_normal((1, 2)))
+# Hypothesis
+theta = np.random.standard_normal((1, 2))
 
 
-def hypothesis(data):
-    pred = (data * theta[0][1]) + theta[0][0]
-    return pred
+def hypothesis(data_in):
+    data_in /= np.max(X)
+    pred = theta[0][0] + (theta[0][1] * data_in)
+    return pred * np.max(y)
 
 
-# Line plot function
-def plotLine(parameters, x, y):
-    x_plot = np.linspace(np.min(x), np.max(x))
-    y_plot = parameters[0][0] + (parameters[0][1] * x_plot)
+# Graph function
+def line(Xs, ys):
+    x_plot = np.linspace(np.min(Xs), np.max(Xs), num=len(Xs))
+    y_plot = []
+    for i in x_plot:
+        p = hypothesis(i)
+        y_plot.insert(-1, p)
+    x_plot = np.delete(x_plot, len(x_plot) - 1)
+    del y_plot[-1]
     plt.plot(x_plot, y_plot)
-    return x_plot
 
 
-# Calculating the costs
-def costs(X, y):
-    prediction = hypothesis(X)
-    cost = 0
-    dJ_dT0 = 0
-    dJ_dT1 = 0
-    for p, y in zip(prediction, y):
-        cost += (p - y)**2
-        dJ_dT0 += p - y
-        dJ_dT1 += (p - y) * p
-    cost /= len(X)
-    dJ_dT0 /= len(X)
-    dJ_dT1 /= len(X)
-    return cost, dJ_dT0, dJ_dT1
-
-
-# Training function
-def train(iterations, alpha, X, y):
-    for i in range(iterations):
-        cost, dJ_dT0, dJ_dT1 = costs(X, y)
-        theta[0][0] -= alpha * dJ_dT0
-        theta[0][1] -= alpha * dJ_dT1
-
-
-# Printing the costs and plotting the line
-train(1500, 0.03, X, y)
-print(costs(X, y))
-
-plotLine(theta, X, y)
+# Vizualize the data
+plt.scatter(X, y)
+line(X, y)
+plt.show()
