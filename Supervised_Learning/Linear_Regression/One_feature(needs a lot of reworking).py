@@ -44,7 +44,39 @@ def line(Xs, ys):
     plt.plot(x_plot, y_plot)
 
 
+# Cost calculations
+def costs(data_in, outputs):
+    p = []
+    cost = []
+    d0 = []
+    d1 = []
+    for i in range(len(data_in)):
+        pred = hypothesis(data_in[i])
+        p.append(pred)
+        c = p[-1] - outputs[i]
+        cost.append(0.5 * c**2)
+        d0.append(c)
+        d1.append(c * data_in[i])
+    cost = np.mean(cost)
+    d0 = np.mean(d0)
+    d1 = np.mean(d1)
+    return cost, d0, d1
+
+
+# Train
+def train(data_in, outputs, iterations=1, alpha=0.5):
+    for i in range(iterations):
+        c, d0, d1 = costs(data_in, outputs)
+        theta[0][0] -= alpha * d0
+        theta[0][1] -= alpha * d1
+    return 0
+
+
 # Vizualize the data
+train(X, y, 1000, 0.2)
+#y *= y_max
+#X *= X_max
+print(costs(X, y))
 plt.scatter(X, y)
 line(X, y)
 plt.show()
