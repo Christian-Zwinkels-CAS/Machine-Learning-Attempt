@@ -11,6 +11,8 @@ def sigmoid(x):
 data = pd.read_csv("Admission_Predict.csv", header=None, skiprows=1)
 X = data[[0, 1]].to_numpy()
 X = X.astype(np.float32)
+for i in range(len(X)):
+    X[i] = (X[i] - np.mean(X, axis=0)) / np.ptp(X, axis=0)
 X = np.insert(X, 0, 1, axis=1)
 plot_1 = X[:, 1]
 plot_2 = X[:, 2]
@@ -38,11 +40,26 @@ def hypothesis(data_in, parameters):
 
 
 def costs(data_in, ouputs, parameters):
-    pred = []
     cost = []
+    derivs = []
     for x, y in zip(data_in, ouputs):
         p = hypothesis(x, parameters)
-        pred.append(p)
         c = y * np.log(p) + (1 - y) * np.log(1 - p)
+        d = (p - y) * x
         cost.append(c)
-    return np.mean(cost) * -1
+        derivs.append(d)
+    cost = np.mean(cost) * -1
+    derivs = np.mean(derivs, axis=0)
+    return cost, derivs
+
+
+def train(data_in, outputs, parameters, iterations=1, alpha=0.2):
+    change = parameters.T
+    for i in range(iterations):
+        Cs, Ds = costs(data_in, outputs, parameters)
+        change -= alpha * Ds
+    print(Cs)
+    return change.T
+
+
+thetas = train(X, y, thetas, 1000, 0.00001)
