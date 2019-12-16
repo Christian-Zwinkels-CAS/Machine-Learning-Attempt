@@ -47,14 +47,13 @@ def hypothethis(data_in):
 
 # Calculating the costs
 def costs(data_in, outputs):
-    pred = []
     cost = []
     derivs = []
     for x, y in zip(data_in, outputs):
-        pred.append(hypothethis(x))
-        c = ((pred[-1] - y)**2)/2
+        p = hypothethis(x)
+        c = ((p - y)**2) / 2
         cost.append(c)
-        d = (pred[-1] - y) * x
+        d = (p - y) * x
         derivs.append(d)
     cost = np.average(cost)
     derivs = np.average(derivs, axis=0)
@@ -71,7 +70,7 @@ def train(data_in, parameters, outputs, iterations=1, alpha=0.1):
 
 
 # Sets the parameters to the trained ones
-thetas = train(X, thetas, y, 1000, 0.2)
+thetas = train(X, thetas, y, 1000, 0.7)
 
 X[:, 1:] *= X_max
 y *= y_max
