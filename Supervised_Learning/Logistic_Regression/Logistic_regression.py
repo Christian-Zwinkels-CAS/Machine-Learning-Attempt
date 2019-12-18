@@ -39,6 +39,7 @@ def hypothesis(data_in, parameters):
     return sigmoid(p)
 
 
+# Cost and derivatives computations
 def costs(data_in, ouputs, parameters):
     cost = []
     derivs = []
@@ -53,13 +54,21 @@ def costs(data_in, ouputs, parameters):
     return cost, derivs
 
 
+# Training function
 def train(data_in, outputs, parameters, iterations=1, alpha=0.2):
     change = parameters.T
+    p = []
+    x = []
     for i in range(iterations):
         Cs, Ds = costs(data_in, outputs, parameters)
-        change -= alpha * Ds
+        p.append(Cs)
+        x.append(i)
+        change += alpha * Ds
     print(Cs)
+    plt.plot(x, p)
+    plt.xlabel("Iteration")
+    plt.ylabel("Cost")
     return change.T
 
-
-thetas = train(X, y, thetas, 1000, 0.00001)
+    
+thetas = train(X, y, thetas, 400, 1.9)
