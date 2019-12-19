@@ -14,22 +14,11 @@ X = X.astype(np.float32)
 for i in range(len(X)):
     X[i] = (X[i] - np.mean(X, axis=0)) / np.ptp(X, axis=0)
 X = np.insert(X, 0, 1, axis=1)
-plot_1 = X[:, 1]
-plot_2 = X[:, 2]
 y = data[2].to_numpy()
 y = y.astype(np.float32())
 
 # Decision boundary
 y = np.where( y >= 0.73, 1, 0)
-color = {0: "red", 1: "blue"}
-
-# Visualizing the data
-for i in np.unique(y):
-    ix = np.where(y == i)
-    plt.scatter(plot_1[ix], plot_2[ix], c=color[i])
-plt.xlabel("GRE Score")
-plt.ylabel("CGPA")
-plt.show()
 
 # Hypothesis
 thetas = np.random.standard_normal((X.shape[1], 1))
@@ -70,5 +59,25 @@ def train(data_in, outputs, parameters, iterations=1, alpha=0.2):
     plt.ylabel("Cost")
     return change.T
 
-    
-thetas = train(X, y, thetas, 400, 1.9)
+
+# Decision boundary visualization
+def plot(inputs, outputs, parameters):
+    color = {0: "red", 1: "blue"}
+    plt.figure()
+    plot_1 = inputs[:, 1]
+    plot_2 = inputs[:, 2]
+    for i in np.unique(outputs):
+        ix = np.where(outputs == i)
+        plt.scatter(plot_1[ix], plot_2[ix], c=color[i])
+    x_plot = plot_1
+    y_plot = -1*(parameters[1]*x_plot / parameters[2]) - (parameters[0] / 
+                                                          parameters[2])
+    plt.plot(x_plot, y_plot)
+    plt.xlabel("GRE Score")
+    plt.ylabel("CGPA")
+    plt.show()
+
+
+# Finalization
+thetas = train(X, y, thetas, 100, 5.7)
+plot(X, y, thetas)
