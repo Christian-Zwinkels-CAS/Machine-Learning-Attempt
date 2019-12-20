@@ -11,8 +11,7 @@ def sigmoid(x):
 data = pd.read_csv("Admission_Predict.csv", header=None, skiprows=1)
 X = data[[0, 1]].to_numpy()
 X = X.astype(np.float32)
-for i in range(len(X)):
-    X[i] = (X[i] - np.mean(X, axis=0)) / np.ptp(X, axis=0)
+X = (X - np.mean(X, axis=0)) / (np.max(X, axis=0) - np.min(X, axis=0))
 X = np.insert(X, 0, 1, axis=1)
 y = data[2].to_numpy()
 y = y.astype(np.float32())
@@ -69,10 +68,12 @@ def plot(inputs, outputs, parameters):
     for i in np.unique(outputs):
         ix = np.where(outputs == i)
         plt.scatter(plot_1[ix], plot_2[ix], c=color[i])
-    x_plot = plot_1
+    x_plot = np.linspace(np.min(plot_1), np.max(plot_1))
     y_plot = -1*(parameters[1]*x_plot / parameters[2]) - (parameters[0] / 
                                                           parameters[2])
     plt.plot(x_plot, y_plot)
+    plt.fill_between(x_plot, y_plot, np.min(y_plot), alpha=0.2, color="red")
+    plt.fill_between(x_plot, y_plot, np.max(y_plot), alpha=0.2, color="blue")
     plt.xlabel("GRE Score")
     plt.ylabel("CGPA")
     plt.show()
