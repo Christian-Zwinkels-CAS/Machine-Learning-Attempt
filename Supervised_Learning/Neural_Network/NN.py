@@ -9,15 +9,12 @@ import pandas as pd
 import numpy as np
 
 # Activation functions
-def tanh(z):
-    return (np.exp(z) - np.exp(-z)) / (np.exp(z) + np.exp(-z))
-
-def d_tanh(z):
-    return 1 - (tanh(z)**2)
+def sigmoid(z):
+    return 1 / (1 + np.exp(z))
 
 def relu(z, d=False):
     if d == False:
-        f = np.maximum(z)
+        f = np.maximum(0.001*z, z)
     else:
         if z < 0:
             f = 0
@@ -38,3 +35,19 @@ layer_sizes = (X.shape[0], 4, 3, 2, y.shape[0])
 weight_sizes = [(y, x) for y, x in zip(layer_sizes[1:], layer_sizes[0:])]
 weights = [np.random.standard_normal(l) for l in weight_sizes]
 biases = [np.zeros((i, 1)) for i in layer_sizes[1:]]
+
+# Foward propagation
+def feedforward(data_in, Ws, Bs):
+    Z = []
+    A = [data_in]  # First activation layer is the inputs
+    # Hidden layer computation
+    for i in range(len(Ws) - 1):
+        z = np.dot(Ws[i], A[-1]) + Bs[i]
+        a = relu(z)
+        Z.append(z)
+        A.append(a)
+    # Ouput layer computation
+    z = np.dot(Ws[-1], A[-1]) + Bs[-1]
+    a = sigmoid(z)
+    A.append(a)
+    return A
