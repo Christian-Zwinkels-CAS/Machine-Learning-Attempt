@@ -25,6 +25,7 @@ def relu(z, d=False):
 
 # Data processing
 data = pd.read_csv("IRISS.csv", header=None, skiprows=1)
+data = data.sample(frac=1)
 X = data[data.columns[0:data.shape[-1] - 1]].to_numpy()
 X = (X - np.mean(X, axis=0)) / (np.max(X, axis=0) - np.min(X, axis=0))
 X = X.T
@@ -51,3 +52,11 @@ def feedforward(data_in, Ws, Bs):
     a = sigmoid(z)
     A.append(a)
     return A
+
+
+# Calculating the costs
+def costs(data_in, outputs, Ws, Bs):
+    pred = feedforward(data_in, Ws, Bs)[-1]
+    loss = -1*(outputs*np.log(pred) + (1-outputs)*np.log(1 - pred))
+    loss = np.mean(loss)
+    return loss
