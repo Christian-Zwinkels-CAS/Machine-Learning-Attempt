@@ -12,12 +12,15 @@ import numpy as np
 def sigmoid(z):
     return 1 / (1 + np.exp(z))
 
+def d_sigmoid(z):
+    return sigmoid(z)*(1 - sigmoid(z))
+
 def relu(z, d=False):
     if d == False:
         f = np.maximum(0.001*z, z)
     else:
         if z < 0:
-            f = 0
+            f = 0.001
         elif z <= 1:
             f = 1
     return f
@@ -34,7 +37,7 @@ y = np.array([data[data.shape[-1] - 1].to_numpy()])
 # Initialization
 layer_sizes = (X.shape[0], 4, 3, 2, y.shape[0])
 weight_sizes = [(y, x) for y, x in zip(layer_sizes[1:], layer_sizes[0:])]
-weights = [np.random.standard_normal(l) for l in weight_sizes]
+weights = [np.random.standard_normal(l)*np.sqrt(1/l[-1]) for l in weight_sizes]
 biases = [np.zeros((i, 1)) for i in layer_sizes[1:]]
 
 # Foward propagation
@@ -44,19 +47,28 @@ def feedforward(data_in, Ws, Bs):
     # Hidden layer computation
     for i in range(len(Ws) - 1):
         z = np.dot(Ws[i], A[-1]) + Bs[i]
-        a = relu(z)
+        a = relu(z, d=False)
         Z.append(z)
         A.append(a)
     # Ouput layer computation
     z = np.dot(Ws[-1], A[-1]) + Bs[-1]
+    Z.append(z)
     a = sigmoid(z)
     A.append(a)
-    return A
+    return Z, A
 
 
 # Calculating the costs
 def costs(data_in, outputs, Ws, Bs):
-    pred = feedforward(data_in, Ws, Bs)[-1]
-    loss = -1*(outputs*np.log(pred) + (1-outputs)*np.log(1 - pred))
+    Z, pred = feedforward(data_in, Ws, Bs)
+    delta = []
+    # Loss computation
+    loss = -1*(outputs*np.log(pred[-1]) + (1-outputs)*np.log(1 - pred[-1]))
     loss = np.mean(loss)
-    return loss
+    # Final layer derivatives
+    dj_da = (pred[-1]-outputs) / (2*pred[-1]*(pred[-1] - 1))
+    da_dz = d_sigmoid(Z[-1])
+    dz_dw = pred[-2]
+    delta.append(np.mean(dj_da*da_dz))
+    dj_dw = delta * np.mean(dz_dw, axis=1)
+    return loss, dj_dw
