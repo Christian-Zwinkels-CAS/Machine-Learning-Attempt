@@ -19,10 +19,7 @@ def relu(z, d=False):
     if d == False:
         f = np.maximum(0.001*z, z)
     else:
-        if z < 0:
-            f = 0.001
-        elif z <= 1:
-            f = 1
+        f = np.where(z >= 0, 1, 0.001)
     return f
 
 
@@ -71,16 +68,20 @@ def costs(data_in, outputs, Ws, Bs):
     loss = np.mean(loss)
 
     # Final layer derivatives
-    dj_da = -1*(pred[-1] - outputs)/((pred[-1] - 1)*pred[-1])
-    da_dz = d_sigmoid(Z[-1])
+    dj_da = -1*((outputs[-1]/pred[-1]) + (1 - outputs)/(1 - pred[-1]))
+    da_dz = relu(Z[-1], d=True)
     dz_dw = pred[-2]
     delta.append(np.mean(dj_da*da_dz))
     dj_dw.append(delta * np.mean(dz_dw, axis=1))
 
+    # TODO figure out the dimensions
+
     # Rest of the derivatives
-    for i in range(1, len(Ws)):
-        d = np.dot(weights[-i].T, delta[0])
-        delta.insert(0, d*d_sigmoid(-i-1))
-    for i in range(len(delta)):
-        pass
-    return loss, delta
+    # for i in range(1, len(Ws)):
+    #     d = np.dot(Ws[-i].T, delta[0])
+    #     f = d_sigmoid(np.mean(Z[-i-1], axis=1).reshape((len(Z[-i-1]), 1)))
+    #     delta.insert(0, d * f)
+    # for i in range(2, len(pred)):
+    #     a = np.mean(pred[-i-1], axis=1) 
+    #     print(a)
+    return loss, da_dz
