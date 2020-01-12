@@ -69,19 +69,15 @@ def costs(data_in, outputs, Ws, Bs):
 
     # Final layer derivatives
     dj_da = -1*((outputs[-1]/pred[-1]) + (1 - outputs)/(1 - pred[-1]))
-    da_dz = relu(Z[-1], d=True)
+    da_dz = d_sigmoid(Z[-1])
     dz_dw = pred[-2]
-    delta.append(np.mean(dj_da*da_dz))
-    dj_dw.append(delta * np.mean(dz_dw, axis=1))
+    delta.append(dj_da*da_dz)
+    #dj_dw.append(delta * np.mean(dz_dw, axis=1))
+    
+    # Deltas calculation
+    for i in range(1, len(Ws)):
+        d = np.dot(Ws[-i].T, delta[-i]) * relu(Z[-i - 1], d=True)
+        delta.insert(0, np.mean(d, axis=1, keepdims=True))
+    delta[-1] = np.mean(delta[-1])
 
-    # TODO figure out the dimensions
-
-    # Rest of the derivatives
-    # for i in range(1, len(Ws)):
-    #     d = np.dot(Ws[-i].T, delta[0])
-    #     f = d_sigmoid(np.mean(Z[-i-1], axis=1).reshape((len(Z[-i-1]), 1)))
-    #     delta.insert(0, d * f)
-    # for i in range(2, len(pred)):
-    #     a = np.mean(pred[-i-1], axis=1) 
-    #     print(a)
-    return loss, da_dz
+    return loss, delta
