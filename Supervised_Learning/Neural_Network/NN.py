@@ -70,9 +70,7 @@ def costs(data_in, outputs, Ws, Bs):
     # Final layer derivatives
     dj_da = -1*((outputs[-1]/pred[-1]) + (1 - outputs)/(1 - pred[-1]))
     da_dz = d_sigmoid(Z[-1])
-    dz_dw = pred[-2]
     delta.append(dj_da*da_dz)
-    #dj_dw.append(delta * np.mean(dz_dw, axis=1))
     
     # Deltas calculation
     for i in range(1, len(Ws)):
@@ -80,4 +78,12 @@ def costs(data_in, outputs, Ws, Bs):
         delta.insert(0, np.mean(d, axis=1, keepdims=True))
     delta[-1] = np.mean(delta[-1])
 
-    return loss, delta
+    # dj_dw calculations for the second last layer of weights
+    A = pred[-3].T
+    for a in A:
+        dj_dw.append(np.dot(delta[-2], [a]))
+    d = np.zeros((2, 3))
+    for s in dj_dw:
+        d += s
+    d /= len(dj_dw)
+    return loss, d
