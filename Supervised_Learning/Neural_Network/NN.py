@@ -7,6 +7,7 @@ Created on Sun Dec 29 16:02:11 2019
 
 import pandas as pd
 import numpy as np
+from matplotlib import pyplot as plt
 
 # Activation functions
 def sigmoid(z):
@@ -32,7 +33,7 @@ X = X.T
 y = np.array([data[data.shape[-1] - 1].to_numpy()])
 
 # Initialization
-layer_sizes = (X.shape[0], 4, 3, 2, y.shape[0])
+layer_sizes = (X.shape[0], 12, 8, 4, y.shape[0])
 weight_sizes = [(y, x) for y, x in zip(layer_sizes[1:], layer_sizes[0:])]
 weights = [np.random.rand(l[0], l[1])*np.sqrt(1/l[1]) for l in weight_sizes]
 biases = [np.zeros((i, 1)) for i in layer_sizes[1:]]
@@ -89,4 +90,17 @@ def costs(data_in, outputs, Ws, Bs):
             d += s
         d /= len(d)
         dj_dw.insert(0, d)
-    return loss, dj_dw
+    return loss, delta, dj_dw
+
+def train(data_in, outputs, Ws, Bs, iters, alpha):
+    c_his = []
+    i_his = []
+    for i in range(iters):
+        c, Bu, Wu = costs(data_in, outputs, Ws, Bs)
+        for j in range(len(Ws)):
+            Bs[j] = np.add(Bs[j], np.multiply(-alpha, Bu[j]))
+            Ws[j] = np.add(Ws[j], np.multiply(-alpha, Wu[j]))
+        c_his.append(c)
+        i_his.append(i)
+    plt.plot(i_his, c_his)
+    plt.show()
