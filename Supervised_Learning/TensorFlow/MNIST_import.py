@@ -3,6 +3,9 @@
 Created on Thu Jan 23 17:11:43 2020
 
 @author: Christian Zwinkels-Valero
+
+MNIST Dataset: http://yann.lecun.com/exdb/mnist/
+Note that the features file is too big to be uploaded to GitHub
 """
 
 import gzip
