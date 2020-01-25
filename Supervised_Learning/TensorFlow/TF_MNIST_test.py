@@ -3,6 +3,9 @@
 Created on Fri Jan 24 18:11:10 2020
 
 @author: Christian Zwinkels-Valero
+
+Prints a prediction to the console and shows what the prediction should be as 
+a pyplot.
 """
 
 import tensorflow as tf
